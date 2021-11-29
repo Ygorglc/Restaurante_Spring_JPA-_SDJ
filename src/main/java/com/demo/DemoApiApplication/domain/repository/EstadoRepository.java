@@ -1,0 +1,10 @@
+package com.demo.DemoApiApplication.domain.repository;
+
+import com.demo.DemoApiApplication.domain.model.Estado;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+
+public interface EstadoRepository extends JpaRepository<Estado,Long> {
+
+}
