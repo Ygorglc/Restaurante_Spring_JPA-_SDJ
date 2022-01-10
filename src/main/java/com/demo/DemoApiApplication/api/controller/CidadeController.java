@@ -1,8 +1,7 @@
 package com.demo.DemoApiApplication.api.controller;
 
 
-import com.demo.DemoApiApplication.domain.exception.EntidadeEmUsoException;
-import com.demo.DemoApiApplication.domain.exception.EntidadeNaoEncontradaException;
+import com.demo.DemoApiApplication.domain.exception.*;
 import com.demo.DemoApiApplication.domain.model.Cidade;
 import com.demo.DemoApiApplication.domain.repository.CidadeRespository;
 import com.demo.DemoApiApplication.domain.service.CadastroCidadeService;
@@ -47,45 +46,26 @@ public class CidadeController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Cidade adicionar(@RequestBody Cidade cidade){
-        return cadastroCidade.salvar(cidade);
+        try {
+            return cadastroCidade.salvar(cidade);
+        } catch (EstadoNaoEncontradaException e){
+            throw new NegocioException(e.getMessage(), e);
+        }
     }
 
-//    @PostMapping
-//    public ResponseEntity<?> adicionar(@PathVariable Long cidadeId,
-//                                       @RequestBody Cidade cidade){
-//
-//        try {
-//            cidade = cadastroCidade.salvar(cidade);
-//            return ResponseEntity.status(HttpStatus.CREATED).body(cidade);
-//        } catch(EntidadeNaoEncontradaException e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
-
-//    @PutMapping("/{cidadeId}")
-//    public ResponseEntity<?> atualizar(@PathVariable Long cidadeId, @RequestBody Cidade cidade){
-//        try{
-//            Cidade cidadeAtual = cidadeRespository.findById(cidadeId).orElse(null);
-//
-//            if(cidadeAtual != null){
-//
-//                BeanUtils.copyProperties(cidade,cidadeAtual,"id");
-//                cidadeAtual = cadastroCidade.salvar(cidadeAtual);
-//
-//                return ResponseEntity.ok(cidadeAtual);
-//            }
-//            return ResponseEntity.notFound().build();
-//        } catch (EntidadeNaoEncontradaException e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
     @PutMapping("/{cidadeId}")
-    public Cidade aualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
+    public Cidade atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
         Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 
         //O beanUtils serve para instanciar, copiar ou comparar propriedades, é um método de conveniência estático
         BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-        return cadastroCidade.salvar(cidadeAtual);
+
+        try{
+            return cadastroCidade.salvar(cidadeAtual);
+        } catch ( EstadoNaoEncontradaException e){
+            throw new NegocioException(e.getMessage(), e);
+        }
+
     }
 
     @DeleteMapping("/{cidadeId}")

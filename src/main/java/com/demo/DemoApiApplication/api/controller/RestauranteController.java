@@ -1,6 +1,8 @@
 package com.demo.DemoApiApplication.api.controller;
 
+import com.demo.DemoApiApplication.domain.exception.CozinhaNaoEncontradaException;
 import com.demo.DemoApiApplication.domain.exception.EntidadeNaoEncontradaException;
+import com.demo.DemoApiApplication.domain.exception.NegocioException;
 import com.demo.DemoApiApplication.domain.model.Restaurante;
 import com.demo.DemoApiApplication.domain.repository.RestauranteRepository;
 import com.demo.DemoApiApplication.domain.service.CadastroRestauranteService;
@@ -54,26 +56,13 @@ public class RestauranteController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Restaurante adicionar(@RequestBody Restaurante restaurante){
-        return cadastroRestaurante.salvar(restaurante);
+        try {
+            return cadastroRestaurante.salvar(restaurante);
+        }catch (CozinhaNaoEncontradaException e){
+            throw new NegocioException(e.getMessage());
+        }
     }
 
-//    @PutMapping("{restauranteId}")
-//    public ResponseEntity<?> atualizar (@PathVariable Long restauranteId, @RequestBody Restaurante restaurante){
-//        try {
-//            Restaurante restauranteAtual = restauranteRepository.findById(restauranteId).orElse(null);
-//
-//            if (restauranteAtual != null){
-//                BeanUtils.copyProperties(restaurante, restauranteAtual, "id","formasPagamento","endereco","dataCadastro");
-//
-//                restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
-//                return ResponseEntity.ok(restauranteAtual);
-//            }
-//
-//            return ResponseEntity.notFound().build();
-//        } catch (EntidadeNaoEncontradaException e){
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//    }
 
     @PutMapping("/{restauranteId}")
     public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante){
@@ -81,8 +70,12 @@ public class RestauranteController {
 
         BeanUtils.copyProperties(restaurante, restauranteAtual,
                 "id", "formasPagamento","endereco", "dataCadastro","produtos");
+        try {
+            return cadastroRestaurante.salvar(restauranteAtual);
+        } catch (CozinhaNaoEncontradaException e){
+            throw new NegocioException(e.getMessage());
+        }
 
-        return cadastroRestaurante.salvar(restauranteAtual);
     }
 
     @PatchMapping("/{restauranteId")

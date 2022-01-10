@@ -1,6 +1,7 @@
 package com.demo.DemoApiApplication.api.controller;
 import com.demo.DemoApiApplication.domain.exception.EntidadeEmUsoException;
 import com.demo.DemoApiApplication.domain.exception.EntidadeNaoEncontradaException;
+import com.demo.DemoApiApplication.domain.exception.NegocioException;
 import com.demo.DemoApiApplication.domain.model.Cozinha;
 import com.demo.DemoApiApplication.domain.repository.CozinhaRepository;
 import com.demo.DemoApiApplication.domain.service.CadastroCozinhaService;
@@ -50,7 +51,12 @@ public class CozinhaController {
 
         BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
-        return cadastroCozinha.salvar(cozinhaAtual);
+//        try {
+            return cadastroCozinha.salvar(cozinhaAtual);
+//        }catch (EntidadeNaoEncontradaException e){
+//            throw new NegocioException(e.getMessage());
+//        }
+
     }
 
     @DeleteMapping("/{cozinhaId}")
