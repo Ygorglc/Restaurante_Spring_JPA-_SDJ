@@ -1,6 +1,7 @@
 package com.demo.DemoApiApplication.api.controller;
 
 
+import com.demo.DemoApiApplication.api.controller.exceptionhadler.Problema;
 import com.demo.DemoApiApplication.domain.exception.*;
 import com.demo.DemoApiApplication.domain.model.Cidade;
 import com.demo.DemoApiApplication.domain.repository.CidadeRespository;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,12 +57,13 @@ public class CidadeController {
 
     @PutMapping("/{cidadeId}")
     public Cidade atualizar(@PathVariable Long cidadeId,@RequestBody Cidade cidade){
-        Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
+        try{
+            Cidade cidadeAtual = cadastroCidade.buscarOuFalhar(cidadeId);
 
         //O beanUtils serve para instanciar, copiar ou comparar propriedades, é um método de conveniência estático
-        BeanUtils.copyProperties(cidade, cidadeAtual, "id");
+            BeanUtils.copyProperties(cidade, cidadeAtual, "id");
 
-        try{
+
             return cadastroCidade.salvar(cidadeAtual);
         } catch ( EstadoNaoEncontradaException e){
             throw new NegocioException(e.getMessage(), e);
@@ -73,5 +76,7 @@ public class CidadeController {
     public void remover(@PathVariable Long cidadeId){
             cadastroCidade.excluir(cidadeId);
     }
+
+
 
 }
