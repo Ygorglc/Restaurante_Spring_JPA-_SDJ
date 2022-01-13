@@ -1,7 +1,7 @@
 package com.demo.DemoApiApplication.api.controller;
 
 
-import com.demo.DemoApiApplication.api.controller.exceptionhadler.Problema;
+import com.demo.DemoApiApplication.api.controller.exceptionhadler.Problem;
 import com.demo.DemoApiApplication.domain.exception.*;
 import com.demo.DemoApiApplication.domain.model.Cidade;
 import com.demo.DemoApiApplication.domain.repository.CidadeRespository;
